@@ -1,0 +1,113 @@
+.contact-hero{
+  height: 300px; /* slightly reduced to free vertical space */
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.contact-hero .overlay{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+}
+.contact-hero .hero-content{
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+}
+.contact-hero h1{
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  line-height: 1.05;
+}
+.contact-hero .lead{
+  font-size: 20px;
+  opacity: 0.95;
+  line-height: 1.4;
+}
+.store-card{
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(17,24,39,0.06);
+}
+.store-card h5{margin-bottom:6px}
+.store-card {
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.store-card:hover{transform:translateY(-6px); box-shadow: 0 12px 30px rgba(17,24,39,0.08)}
+.store-card .icon-wrap{padding:16px; width:96px; height:96px; display:flex; align-items:center; justify-content:center; border-radius:16px; box-shadow: 0 6px 18px rgba(17,24,39,0.04);}
+.store-card .store-icon{width:64px; height:64px; object-fit:contain}
+.store-card h5{font-size:20px; font-weight:700; margin-bottom:6px}
+.store-card{min-height:180px; display:flex; align-items:center; padding:12px 16px; gap:14px}
+.store-card .icon-wrap{padding:8px; width:140px; height:140px; display:flex; align-items:center; justify-content:center; border-radius:16px; box-shadow: 0 6px 18px rgba(17,24,39,0.04); background:#fff; border:1px solid rgba(0,0,0,0.04)}
+.store-card .icon-wrap img{display:block; width:120px; height:120px; object-fit:contain}
+.store-card .store-icon{width:120px; height:120px; object-fit:contain}
+.store-card p, .store-card .small{font-size:15px; line-height:1.45; color:#475057}
+.store-card p strong{color:#1f7a3b; font-weight:700; font-size:16px}
+.stores-map-row{align-items:stretch}
+.stores-map-row .col-lg-5{display:flex; flex-direction:column; gap:12px}
+.stores-map-row .store-card{flex:1; margin-bottom:0}
+.store-card .d-flex > div:first-of-type{min-width:140px}
+.store-card .d-flex > div:last-of-type{flex:1}
+.map-wrapper{min-height:480px; max-height:60vh; overflow:hidden}
+.map-wrapper iframe{height:100%}
+.map-wrapper{position:relative}
+.map-hint{
+  position:absolute; right:14px; bottom:12px; background: rgba(0,0,0,0.6); color:#fff; padding:8px 10px; border-radius:6px; font-size:13px;
+}
+.contact-panel{background:#f5f6f8}
+.contact-panel h3{font-weight:700; font-size:22px; line-height:1.25; margin-bottom:8px}
+.contact-panel .row{align-items:stretch}
+.contact-panel .col-lg-7{display:flex; flex-direction:column; justify-content:center}
+.contact-panel .form-control{padding:14px 16px; font-size:17px; line-height:1.4}
+.contact-panel textarea.form-control{min-height:220px}
+.contact-panel .btn{padding:12px 20px; font-size:16px}
+.contact-side-image{max-height:420px; object-fit:cover}
+.features-strip{background:#2f9d3b; margin-bottom:50px}
+.features-strip img{filter:brightness(1) invert(0);}
+.features-strip{
+  background:#2f9d3b;
+  margin-bottom:50px;
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:18px 20px;
+  align-items:stretch;
+  padding:18px 22px;
+}
+/* make each feature a compact card to avoid large empty gutters */
+.feature-item{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:12px 12px;
+  border-radius:8px;
+  min-height:120px;
+}
+.feature-icon-wrap{
+  width:110px;
+  height:110px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+.feature-icon{max-width:88%;max-height:88%;object-fit:contain;display:block}
+.features-strip .fw-bold{font-size:16px; font-weight:700}
+.features-strip .small{opacity:0.95; font-size:14px; color: rgba(255,255,255,0.95);}
+@media (max-width: 767px){
+  .contact-hero{height:220px}
+  .contact-hero h1{font-size:24px}
+  .features-strip{grid-template-columns:repeat(2,1fr);gap:12px}
+  .store-card{min-height:auto; padding:12px}
+  .store-card .icon-wrap{padding:6px; width:110px; height:110px}
+  .store-card .store-icon{width:88px; height:88px}
+  .feature-icon-wrap{width:88px;height:88px}
+  .feature-icon{max-width:78%;max-height:78%}
+  .store-card h5{font-size:16px}
+  .map-wrapper{min-height:280px}
+  .stores-map-row .store-card{flex:auto}
+}

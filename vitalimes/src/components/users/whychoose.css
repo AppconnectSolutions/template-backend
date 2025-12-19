@@ -1,0 +1,55 @@
+.why-vitalimes {
+  padding: 70px 20px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.why-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2f4c35;
+  margin-bottom: 50px;
+
+  /* FIXED CENTER */
+  text-align: center;
+  width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px 20px;
+  justify-items: center;
+  align-items: center;
+}
+
+.why-item {
+  text-align: center;
+  max-width: 200px;
+}
+
+.why-item img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  margin-bottom: 15px;
+  image-rendering: -webkit-optimize-contrast; 
+  image-rendering: crisp-edges;
+  transform: translateZ(0);
+  background: #ffffff !important;
+}
+
+.why-item p {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .why-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

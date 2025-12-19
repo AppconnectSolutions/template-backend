@@ -1,0 +1,646 @@
+
+
+/* ---------------------------------------------------- */
+/* GLOBAL STYLES */
+/* ---------------------------------------------------- */
+
+.about-wrapper {
+  position: relative;
+  z-index: 1;
+  background-color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+}
+
+/* ---------------------------------------------------- */
+/* HERO BANNER */
+/* ---------------------------------------------------- */
+
+.hero-banner {
+  height: 420px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.hero-content {
+  position: relative;
+  text-align: center;
+  color: #ffffff;
+  max-width: 700px;
+}
+
+.hero-content h1 {
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.hero-content p {
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+/* ---------------------------------------------------- */
+/* STATS SECTION */
+/* ---------------------------------------------------- */
+
+.stats-section {
+  padding: 50px 0;
+}
+
+.stat-box h2 {
+  font-size: 42px;
+  font-weight: 800;
+  color: #246b37;
+}
+
+.stat-box p {
+  font-size: 17px;
+  margin-top: 10px;
+  color: #555;
+}
+
+/* ---------------------------------------------------- */
+/* ABOUT DESTINATION */
+/* ---------------------------------------------------- */
+
+.about-destination {
+  padding: 80px 0;
+  position: relative;
+  z-index: 2;
+  background-color: #ffffff;
+}
+
+.destination-img {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.about-destination h2 {
+  font-size: 34px;
+  font-weight: 800;
+  color: #1f3b2f;
+  margin-bottom: 16px;
+}
+
+.about-destination p {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 18px;
+}
+
+.about-destination ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.about-destination ul li {
+  font-size: 16px;
+  margin-bottom: 10px;
+  padding-left: 24px;
+  position: relative;
+}
+
+.about-destination ul li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  color: #246b37;
+}
+
+/* ---------------------------------------------------- */
+/* EXPERT TEAM */
+/* ---------------------------------------------------- */
+
+.expert-team-section {
+  padding: 70px 0;
+}
+
+.expert-team-section h2 {
+  font-size: 36px;
+  font-weight: 800;
+  color: #1f3b2f;
+}
+
+.team-sub {
+  font-size: 17px;
+  color: #777;
+}
+
+.team-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+}
+
+.team-photo {
+  width: 100%;
+  border-radius: 12px;
+}
+
+/* ---------------------------------------------------- */
+/* WHY CHOOSE US */
+/* ---------------------------------------------------- */
+
+.why-choose-section {
+  padding: 70px 0;
+}
+
+.choose-card {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 40px 30px;
+  min-height: 380px;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.choose-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+}
+
+.choose-icon {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 20px;
+}
+
+/* ---------------------------------------------------- */
+/* TESTIMONIALS */
+/* ---------------------------------------------------- */
+
+.testimonial-section {
+  padding: 70px 0;
+}
+
+.testimonial-card {
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 16px;
+  text-align: center;
+  border: 1px solid #eaeaea;
+  transition: 0.3s;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.test-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ---------------------------------------------------- */
+/* FEATURES ROW */
+/* ---------------------------------------------------- */
+
+.features-row {
+  background: #2c7436;
+  padding: 40px 0;
+  margin-top: 60px;
+}
+
+.feature-box {
+  color: #ffffff;
+}
+
+/* ---------------------------------------------------- */
+/* VISION / MISSION / COMMITMENT (OVERLAY FIXED) */
+/* ---------------------------------------------------- */
+
+.vision-mission-commitment {
+  position: relative;
+  z-index: 5;
+  background-color: #ffffff;
+  padding: 100px 0;
+}
+
+.vision-mission-commitment .row {
+  align-items: stretch;
+}
+
+/* Card */
+.vmc-card {
+  background: #f9fdf9;
+  border-radius: 22px;
+  padding: 42px 30px;
+  height: 100%;
+  text-align: left;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.vmc-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12);
+}
+
+/* Icon — HARD OVERLAY STOP */
+.vmc-icon {
+  position: static !important;
+  display: block;
+  width: 260px;
+  height: 260px;
+  margin: 0 auto 18px;
+  object-fit: contain;
+}
+
+/* Text */
+.vmc-card h3 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1f6b3a;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.vmc-card p {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: #444;
+}
+
+/* ---------------------------------------------------- */
+/* FOUNDER SECTION */
+/* ---------------------------------------------------- */
+
+.founder-section {
+  padding: 80px 0;
+}
+
+.founder-photo {
+  width: 320px;
+  height: 320px;
+  border-radius: 18px;
+  object-fit: cover;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.founder-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #1f3b2f;
+}
+
+.founder-name {
+  font-size: 26px;
+  font-weight: 700;
+  color: #246b37;
+}
+
+.founder-desc {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #555;
+  max-width: 600px;
+}
+
+/* ---------------------------------------------------- */
+/* ANIMATIONS */
+/* ---------------------------------------------------- */
+
+.fade-in {
+  animation: fadeInMove 0.8s ease-in-out;
+}
+
+@keyframes fadeInMove {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------- */
+/* RESPONSIVE */
+/* ---------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 36px;
+  }
+
+  .vision-mission-commitment {
+    padding: 60px 0;
+  }
+}
+
+
+/* ---------------------------------------------------- */
+/* ABOUT VITALIME – LEFT TEXT / RIGHT IMAGE */
+/* ---------------------------------------------------- */
+
+.about-vitalime-section {
+  padding: 90px 0;
+  background-color: #ffffff;
+}
+
+.about-vitalime-content {
+  background: #f9fdf9;
+  border-radius: 22px;
+  padding: 50px 45px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.about-vitalime-title {
+  font-size: 38px;
+  font-weight: 800;
+  color: #1f6b3a;
+  margin-bottom: 22px;
+}
+
+.about-vitalime-content p {
+  font-size: 17px;
+  line-height: 1.9;
+  color: #444;
+  margin-bottom: 16px;
+}
+
+.about-vitalime-highlight {
+  font-weight: 600;
+  color: #1f3b2f;
+}
+
+/* Right image */
+.about-vitalime-image {
+  width: 100%;
+  max-width: 520px;
+  height : 620px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .about-vitalime-content {
+    padding: 35px 24px;
+    text-align: left;
+  }
+
+  .about-vitalime-title {
+    font-size: 30px;
+  }
+
+  .about-vitalime-content p {
+    font-size: 16px;
+  }
+
+  .about-vitalime-image {
+    margin-top: 30px;
+  }
+}
+
+/* ===================================================== */
+/* SECTION SPACING FIX */
+/* ===================================================== */
+
+/* Space BEFORE Vision / Mission / Commitment section */
+.vmc-section,
+.vision-mission-commitment {
+  margin-top: 80px;   /* ⬅ creates gap from previous section */
+}
+
+/* Space AFTER Vision / Mission / Commitment section */
+.vmc-section,
+.vision-mission-commitment {
+  margin-bottom: 80px;
+}
+/* ---------------------------------------------------- */
+/* ABOUT VITALIME – EQUAL HEIGHT FIX */
+/* ---------------------------------------------------- */
+
+.about-vitalime-row {
+  align-items: stretch;
+}
+
+/* LEFT CARD */
+.about-vitalime-content {
+  background: #f9fdf9;
+  border-radius: 22px;
+  padding: 50px 45px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+/* RIGHT IMAGE WRAPPER */
+.about-vitalime-image-wrap {
+  width: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+  display: flex;
+}
+
+/* IMAGE */
+.about-vitalime-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* 🔑 forces equal height */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .about-vitalime-content {
+    padding: 35px 24px;
+  }
+
+  .about-vitalime-image-wrap {
+    margin-top: 25px;
+  }
+
+  .about-vitalime-image {
+    height: auto;
+  }
+}
+
+/* ---------------------------------------------------- */
+/* FULL WIDTH STATS SECTION */
+/* ---------------------------------------------------- */
+
+.stats-fullwidth-section {
+  width: 100%;
+  padding: 90px 0;
+  background: #f4f6f4;
+}
+
+/* Grid covers full screen */
+.stats-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  padding: 0 40px; /* page side spacing */
+}
+
+/* Individual stat card */
+.stat-box {
+  background: #ffffff;
+  height: 200px;              /* INCREASED HEIGHT */
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
+  transition: all 0.35s ease;
+}
+
+/* Hover effect */
+.stat-box:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* Number */
+.stat-box h2 {
+  font-size: 48px;            /* BIGGER FONT */
+  font-weight: 900;
+  color: #1f3b2f;
+  margin-bottom: 10px;
+}
+
+/* Label */
+.stat-box p {
+  font-size: 18px;
+  color: #555;
+  margin: 0;
+}
+
+/* ---------------------------------------------------- */
+/* RESPONSIVE */
+/* ---------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+  }
+
+  .stat-box {
+    height: 180px;
+  }
+
+  .stat-box h2 {
+    font-size: 42px;
+  }
+}
+
+
+/* ---------------------------------------------------- */
+/* PRODUCT PORTFOLIO SECTION */
+/* ---------------------------------------------------- */
+
+.product-portfolio-section {
+  padding: 90px 0;
+  background: #ffffff;
+}
+
+/* Header */
+.portfolio-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 50px;
+}
+
+.portfolio-header h2 {
+  font-size: 38px;
+  font-weight: 800;
+  color: #1f3b2f;
+  margin-bottom: 12px;
+}
+
+.portfolio-header p {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.7;
+}
+
+/* Grid */
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* Card */
+.portfolio-card {
+  background: #f9fdf9;
+  border-radius: 16px;
+  padding: 26px 18px;
+  text-align: center;
+  font-size: 16.5px;
+  font-weight: 600;
+  color: #1f6b3a;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+/* Hover */
+.portfolio-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  background: #eef8f0;
+}
+
+/* ---------------------------------------------------- */
+/* RESPONSIVE */
+/* ---------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  .portfolio-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .portfolio-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .portfolio-header h2 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+}

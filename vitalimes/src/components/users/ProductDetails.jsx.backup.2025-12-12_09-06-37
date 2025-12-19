@@ -1,0 +1,388 @@
+// ProductDetails.jsx
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useCart } from "./CartContext.jsx";
+import { Container, Row, Col } from "react-bootstrap";
+
+export default function ProductDetails() {
+  const { cart, addToCart, openCart } = useCart();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+  const [product, setProduct] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [activeImg, setActiveImg] = useState(0);
+  const [qty, setQty] = useState(1);
+  const [related, setRelated] = useState([]);
+
+  useEffect(() => {
+    loadProduct();
+    loadRelated();
+    setActiveImg(0);
+    setQty(1);
+  }, [id]);
+
+  /* ================= LOAD PRODUCT ================= */
+  const loadProduct = async () => {
+    try {
+      const { data } = await axios.get(`${API_URL}/api/products/${id}`);
+      const p = data.product;
+      if (!p) return;
+
+      const images = [
+        p.image1 && `${API_URL}/uploads/${p.image1}`,
+        p.image2 && `${API_URL}/uploads/${p.image2}`,
+        p.image3 && `${API_URL}/uploads/${p.image3}`,
+        p.image4 && `${API_URL}/uploads/${p.image4}`,
+        p.image5 && `${API_URL}/uploads/${p.image5}`,
+        p.image6 && `${API_URL}/uploads/${p.image6}`,
+      ].filter(Boolean);
+
+      setProduct({ ...p, images });
+      if (p.variants?.length > 0) {
+        setSelectedVariant(p.variants[0]);
+      } else {
+        setSelectedVariant(null);
+      }
+    } catch (e) {
+      console.error("Product fetch error", e);
+      setProduct(null);
+    }
+  };
+
+  /* ================= LOAD RELATED PRODUCTS ================= */
+  const loadRelated = async () => {
+    try {
+      const { data } = await axios.get(`${API_URL}/api/products?status=Active`);
+      setRelated(data.products || []);
+    } catch (e) {
+      console.warn("Related fetch failed", e);
+      setRelated([]);
+    }
+  };
+
+  if (!product) return <h3 className="text-center my-5">Loading Product...</h3>;
+
+  /* ================= ADD TO CART ================= */
+  const handleAddToCart = () => {
+    if (!selectedVariant) return;
+
+    const productId = product.id || product._id || product.product_id;
+    const existingItem = cart.find(
+      (item) => item.id === productId && item.weight === selectedVariant.weight
+    );
+
+    if (!existingItem) {
+      addToCart(
+        {
+          id: productId,
+          title: product.title,
+          weight: selectedVariant.weight,
+          price: selectedVariant.sale_price || selectedVariant.price,
+          img: product.images?.[0] || "",
+        },
+        qty
+      );
+    }
+
+    if (typeof openCart === "function") openCart();
+  };
+
+  /* ================= SET QTY FOR EXISTING CART ITEM ================= */
+  const setQtyForItem = (productId, weight, newQty) => {
+    const item = cart.find((i) => i.id === productId && i.weight === weight);
+    if (item) {
+      // Add the difference in quantity to cart
+      addToCart({ ...item }, newQty - item.qty);
+    }
+  };
+
+  /* ================= BUY NOW ================= */
+  const handleBuyNow = () => {
+    handleAddToCart();
+    navigate("/checkout");
+  };
+
+  const handleImgError = (e) => {
+    e.currentTarget.src =
+      "data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D'600'%20height%3D'400'%20xmlns%3D'http://www.w3.org/2000/svg'%3E%3Crect%20width%3D'100%25'%20height%3D'100%25'%20fill%3D'%23f3f3f3'%3E%3C/rect%3E%3Ctext%20x%3D'50%25'%20y%3D'50%25'%20dominant-baseline%3D'middle'%20text-anchor%3D'middle'%20fill%3D'%23999'%20font-size%3D'20'%3ENo%20Image%3C/text%3E%3C/svg%3E";
+  };
+
+  const productIdMain = product.id || product._id || product.product_id;
+  const productInCart = cart.some(
+    (item) => item.id === productIdMain && item.weight === selectedVariant?.weight
+  );
+
+  return (
+    <Container className="py-5">
+      <Row>
+        {/* LEFT: Large image + thumbnails */}
+        <Col md={6}>
+          <div
+            style={{
+              width: "100%",
+              height: "550px",
+              overflow: "hidden",
+              borderRadius: "12px",
+              background: "#fff",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <img
+              src={product.images[activeImg]}
+              alt={product.title}
+              onError={handleImgError}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+
+          {/* Thumbnails */}
+          <div className="d-flex gap-2 mt-3 flex-wrap">
+            {product.images.map((img, i) => (
+              <img
+                key={i}
+                src={img}
+                alt={`${product.title} ${i + 1}`}
+                onClick={() => setActiveImg(i)}
+                onError={handleImgError}
+                style={{
+                  width: "80px",
+                  height: "80px",
+                  objectFit: "cover",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  border: activeImg === i ? "3px solid #5C3A1E" : "1px solid #bbb",
+                }}
+              />
+            ))}
+          </div>
+        </Col>
+
+        {/* RIGHT: Product details */}
+        <Col md={6}>
+          <h2 className="fw-bold">{product.title}</h2>
+
+          {selectedVariant ? (
+            <div className="my-3">
+              <h3 className="fw-bold">
+                ₹{selectedVariant.sale_price || selectedVariant.price}
+              </h3>
+              {selectedVariant.sale_price && (
+                <p className="text-muted text-decoration-line-through">
+                  ₹{selectedVariant.price}
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="my-3">
+              <h3 className="fw-bold">₹{product.price || "—"}</h3>
+            </div>
+          )}
+
+          {/* Variants */}
+          <h5 className="fw-bold mt-4">Available Sizes</h5>
+          <div className="d-flex flex-wrap gap-2">
+            {product.variants?.map((v) => (
+              <button
+                key={v.id || v._id || `${v.weight}-${v.price}`}
+                onClick={() => setSelectedVariant(v)}
+                className="btn"
+                style={{
+                  border:
+                    selectedVariant?.id === v.id ||
+                    selectedVariant?.weight === v.weight
+                      ? "2px solid #5C3A1E"
+                      : "1px solid gray",
+                  borderRadius: "10px",
+                  padding: "10px 16px",
+                  background:
+                    selectedVariant?.id === v.id ||
+                    selectedVariant?.weight === v.weight
+                      ? "#5C3A1E"
+                      : "white",
+                  color:
+                    selectedVariant?.id === v.id ||
+                    selectedVariant?.weight === v.weight
+                      ? "white"
+                      : "black",
+                }}
+                type="button"
+              >
+                {v.weight} — ₹{v.sale_price || v.price}
+              </button>
+            )) || <p className="text-muted">No variants available</p>}
+          </div>
+
+          {/* Quantity */}
+          <h5 className="fw-bold mt-4">Quantity</h5>
+          <div className="d-flex align-items-center">
+            <button
+              className="btn btn-dark"
+              onClick={() => {
+                if (qty > 1) {
+                  const newQty = qty - 1;
+                  setQty(newQty);
+                  setQtyForItem(productIdMain, selectedVariant.weight, newQty);
+                }
+              }}
+              type="button"
+            >
+              -
+            </button>
+
+            <span className="mx-3 fs-4">{qty}</span>
+
+            <button
+              className="btn btn-dark"
+              onClick={() => {
+                const newQty = qty + 1;
+                setQty(newQty);
+                setQtyForItem(productIdMain, selectedVariant.weight, newQty);
+              }}
+              type="button"
+            >
+              +
+            </button>
+          </div>
+
+          {/* Buttons */}
+          <div className="d-flex gap-3 mt-4 align-items-center">
+            <div style={{ position: "relative", flex: 1 }}>
+              <button
+                className="btn btn-dark w-100 py-3"
+                onClick={handleAddToCart}
+                type="button"
+              >
+                Add to Cart
+              </button>
+            </div>
+
+            <button
+              className="btn btn-warning flex-fill py-3"
+              onClick={handleBuyNow}
+              type="button"
+            >
+              Buy Now
+            </button>
+          </div>
+
+          <p className="mt-4" style={{ whiteSpace: "pre-wrap" }}>
+            {product.description}
+          </p>
+        </Col>
+      </Row>
+
+      {/* =======================================================
+          RELATED PRODUCTS SECTION
+      ======================================================= */}
+      <div className="mt-5">
+        <h3 className="fw-bold mb-4">Related Products</h3>
+
+        <Row>
+          {related.length === 0 && <p className="text-muted">No related products found.</p>}
+
+          {related
+            .filter((p) => p.id !== id && p._id !== id)
+            .slice(0, 8)
+            .map((p) => {
+              const firstImg = p.image1
+                ? `${API_URL}/uploads/${p.image1}`
+                : "https://via.placeholder.com/150";
+
+              const productId = p.id || p._id || p.product_id;
+              const variant = p.variants?.[0];
+              const variantWeight = variant?.weight || "1unit";
+
+              const itemInCart = cart.find(
+                (i) => i.id === productId && i.weight === variantWeight
+              );
+              const qtyRelated = itemInCart?.qty || 1;
+
+              return (
+                <Col md={3} sm={6} xs={6} className="mb-4" key={productId}>
+                  <div
+                    className="p-3 border rounded"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/product/${productId}`)}
+                  >
+                    <img
+                      src={firstImg}
+                      alt={p.title}
+                      className="w-100"
+                      style={{
+                        height: "200px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
+                    />
+
+                    <h6 className="mt-3 fw-bold">{p.title}</h6>
+
+                    {p.variants?.length > 0 ? (
+                      <p className="m-0 fw-bold">
+                        ₹{variant?.sale_price || variant?.price || p.price}
+                      </p>
+                    ) : (
+                      <p className="m-0 fw-bold">₹{p.price}</p>
+                    )}
+
+                    <div className="d-flex align-items-center mt-2">
+                      <button
+                        className="btn btn-dark"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (qtyRelated > 1) {
+                            setQtyForItem(productId, variantWeight, qtyRelated - 1);
+                          }
+                        }}
+                      >
+                        -
+                      </button>
+                      <span className="mx-2">{qtyRelated}</span>
+                      <button
+                        className="btn btn-dark"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setQtyForItem(productId, variantWeight, qtyRelated + 1);
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <button
+                      className="btn btn-dark w-100 mt-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!itemInCart) {
+                          addToCart(
+                            {
+                              id: productId,
+                              title: p.title,
+                              weight: variantWeight,
+                              price: variant?.sale_price || variant?.price || p.price,
+                              img: firstImg,
+                            },
+                            1
+                          );
+                        }
+                        openCart();
+                      }}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </Col>
+              );
+            })}
+        </Row>
+      </div>
+    </Container>
+  );
+}
+

@@ -1,0 +1,141 @@
+.cart-sidebar-v2 {
+  position: fixed;
+  top: 0;
+  width: 420px;
+  height: 100vh;
+  background: #ffffff;
+  z-index: 2000;
+  padding: 18px;
+  border-left: 1px solid #eee;
+  transition: right 0.25s ease;
+  overflow-y: auto;
+  font-family: "Inter", sans-serif;
+}
+
+/* Header */
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Items */
+.cart-item-row {
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.cart-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.cart-info {
+  flex: 1;
+}
+
+.cart-title-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-title {
+  font-size: 14px;
+}
+
+.item-price {
+  font-size: 14px;
+  color: #222;
+}
+
+/* Qty buttons */
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.qty-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  background: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.qty-value {
+  font-weight: bold;
+}
+
+.remove-btn {
+  margin-left: auto;
+  color: red;
+  font-size: 12px;
+  text-decoration: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Subtotal Box */
+.subtotal-box {
+  display: flex;
+  justify-content: space-between;
+  background: #fafafa;
+  border: 1px solid #e5e5e5;
+  padding: 14px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+}
+
+.subtotal-label {
+  font-weight: bold;
+}
+
+.subtotal-value {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Buttons */
+.cart-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.checkout-btn {
+  background: #4caf50;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.viewcart-btn {
+  border: 2px solid #222;
+  background: white;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 6px;
+}
