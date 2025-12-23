@@ -81,6 +81,32 @@ router.post("/create", async (req, res) => {
   }
 });
 
+// Update shipment by order_no (waybill + ship_date only)
+router.put("/update-shipment/:order_no", async (req, res) => {
+  try {
+    const { order_no } = req.params;
+    const { waybill, ship_date } = req.body;
+
+    const sql = `
+      UPDATE shipments
+      SET waybill = ?, ship_date = ?
+      WHERE order_no = ?
+    `;
+
+    const [result] = await pool.query(sql, [waybill, ship_date, order_no]);
+
+    if (result.affectedRows === 0) {
+      return res.json({ success: false, message: "Shipment not found" });
+    }
+
+    res.json({ success: true, message: "Shipment updated successfully" });
+  } catch (err) {
+    console.error("Error updating shipment:", err);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+});
+
+
 /* ============================================================
    2️⃣ FETCH ALL SHIPMENTS
    ✅ NOW JOINING ORDERS TO GET invoice_no, order_date, total_amount
@@ -156,6 +182,37 @@ router.get("/order/:order_no", async (req, res) => {
       .json({ success: false, error: "Failed to fetch order shipment" });
   }
 });
+
+
+
+/* UPDATE WAYBILL & SHIP DATE BY ORDER NUMBER */
+router.get("/get/:order_no", async (req, res) => {
+  try {
+    const { order_no } = req.params;
+
+    const sql = `
+      SELECT *
+      FROM shipments
+      WHERE order_no = ?
+      ORDER BY id DESC
+      LIMIT 1
+    `;
+
+    const [rows] = await pool.query(sql, [order_no]);
+
+    if (!rows.length) {
+      return res.json({ success: false, message: "Shipment not found" });
+    }
+
+    res.json({ success: true, order: rows[0] });
+  } catch (err) {
+    console.error("Error fetching shipment:", err);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+});
+
+
+
 
 /* ============================================================
    5️⃣ UPDATE SHIPMENT (FULL)

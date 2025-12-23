@@ -11,16 +11,6 @@ import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-/* ==================================================
-   MULTER STORAGE
-================================================== */
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => {
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + unique + path.extname(file.originalname));
-  }
-});
 
 
 /* Delete helper */
@@ -110,7 +100,8 @@ router.post("/", upload.any(), async (req, res) => {
     files.forEach((f) => {
       if (f.fieldname.startsWith("image")) {
         const index = parseInt(f.fieldname.replace("image", "")) - 1;
-        images[index] = f.filename;
+        images[index] = f.filename; 
+
       }
     });
 
@@ -229,7 +220,8 @@ router.put("/:id", upload.any(), async (req, res) => {
       if (f.fieldname.startsWith("image")) {
         const index = parseInt(f.fieldname.replace("image", "")) - 1;
         safeUnlink(`uploads/${images[index]}`); // remove old image if exists
-        images[index] = f.filename;
+        safeUnlink(images[index]?.replace("/uploads/", "uploads/"));
+
       }
     });
 

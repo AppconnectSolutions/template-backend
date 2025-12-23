@@ -6,6 +6,10 @@ export default function PrepareShipment() {
   const { order_no } = useParams();
 
   const [order, setOrder] = useState(null);
+  const API = import.meta.env.VITE_API_URL;
+  console.log("API URL:", API);
+  console.log("API URL:", import.meta.env.VITE_API_URL);
+
 
   // FORM DATA FOR ADMIN INPUT
   const [form, setForm] = useState({
@@ -27,9 +31,10 @@ export default function PrepareShipment() {
   const loadOrder = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/orders/get/${order_no}`,
-        { headers: { "Cache-Control": "no-cache" } }
-      );
+  `${API}/api/orders/get/${order_no}`,
+  { headers: { "Cache-Control": "no-cache" } }
+);
+
 
       if (res.data.success) {
         setOrder(res.data.order);
@@ -78,9 +83,10 @@ export default function PrepareShipment() {
       };
 
       const res = await axios.post(
-        "http://localhost:5000/api/shipments/create",
-        payload
-      );
+  `${API}/api/shipments/create`,
+  payload
+);
+
 
       if (res.data.success) {
         alert("Shipment details saved successfully!");

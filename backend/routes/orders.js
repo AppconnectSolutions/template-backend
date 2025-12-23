@@ -49,6 +49,98 @@ function buildInvoiceHTML(order, products) {
   `;
 }
 
+
+
+/* ---------------- DOWNLOAD EXCEL ---------------- */ 
+
+
+router.get("/export-excel-filter", async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || !query.trim()) {
+      return res.status(400).json({ success: false, error: "Search query required" });
+    }
+
+    const search = `%${query.trim()}%`;
+
+    const sql = `
+      SELECT order_no, invoice_no, name, mobile, total_amount, status, order_date, products_json, address
+      FROM orders
+      WHERE order_no LIKE ?
+         OR invoice_no LIKE ?
+         OR name LIKE ?
+         OR mobile LIKE ?
+    `;
+    const params = [search, search, search, search];
+
+    const [rows] = await pool.query(sql, params);
+
+    if (!rows.length) {
+      return res.status(404).json({ success: false, message: "No matching orders found" });
+    }
+
+    // Excel logic here (same as before)
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Orders");
+
+    worksheet.columns = [
+      { header: "Order No", key: "order_no" },
+      { header: "Invoice No", key: "invoice_no" },
+      { header: "Customer Name", key: "name" },
+      { header: "Mobile", key: "mobile" },
+      { header: "Total Amount", key: "total_amount" },
+      { header: "Status", key: "status" },
+      { header: "Order Date", key: "order_date" },
+      { header: "Products", key: "products" },
+      { header: "Address", key: "address" }
+    ];
+
+    rows.forEach(row => {
+      let products = "-";
+      try {
+        const items = JSON.parse(row.products_json);
+        products = items.map(p => {
+          const title = p.title || "Product";
+          const weight = p.weight ? `${p.weight}g` : "";
+          const units = p.units ? `${p.units} pack` : "";
+          const qty = p.qty ? `Qty: ${p.qty}` : "";
+          return [title, weight, units, qty].filter(Boolean).join(" | ");
+        }).join("\n");
+      } catch {
+        products = "-";
+      }
+
+      worksheet.addRow({
+        order_no: row.order_no,
+        invoice_no: row.invoice_no,
+        name: row.name,
+        mobile: row.mobile,
+        total_amount: row.total_amount,
+        status: row.status,
+        order_date: row.order_date,
+        products,
+        address: row.address
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=filtered-orders.xlsx");
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error("EXPORT EXCEL FILTER ERROR:", err);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+});
+
+
+
+
 /* =======================================================
    SEQUENCE HELPERS
 ======================================================= */
@@ -139,50 +231,37 @@ router.get("/export-excel", async (req, res) => {
 // ===== EXPORT EXCEL FOR RANGE =====
 // routes/orders.js
 
-// ===== EXPORT EXCEL FOR SINGLE MONTH =====
-router.get("/export-excel", async (req, res) => {
-  try {
-    const year = parseInt(req.query.year, 10);
-    const month = parseInt(req.query.month, 10); // 1–12
-
-    if (!year || !month || month < 1 || month > 12) {
-      return res
-        .status(400)
-        .json({ success: false, error: "year & month query params required" });
-    }
-
-    const startDate = `${year}-${String(month).padStart(2, "0")}-01`;
-    const endDateObj = new Date(year, month, 0); // last day of month
-    const endDate = endDateObj.toISOString().slice(0, 10);
-
-    await exportOrdersToExcel(startDate, endDate, res, `orders-${year}-${String(month).padStart(2, "0")}.xlsx`);
-  } catch (err) {
-    console.error("EXPORT EXCEL ERROR:", err);
-    res.status(500).json({ success: false, error: "Server error" });
-  }
-});
 
 // ===== EXPORT EXCEL FOR RANGE =====
+// ===== EXPORT EXCEL (FROM DATE → TO DATE) =====
 router.get("/export-excel-range", async (req, res) => {
   try {
-    const { from, to } = req.query; // 'YYYY-MM' format
+    const { from, to } = req.query; // YYYY-MM-DD
 
     if (!from || !to) {
-      return res.status(400).json({ success: false, error: "from & to query params required" });
+      return res.status(400).json({
+        success: false,
+        error: "from & to query params required (YYYY-MM-DD)",
+      });
     }
 
-    const startDate = `${from}-01`;
-    const endDateObj = new Date(`${to}-01`);
-    endDateObj.setMonth(endDateObj.getMonth() + 1);
-    endDateObj.setDate(0); // last day of 'to' month
-    const endDate = endDateObj.toISOString().slice(0, 10);
+    const startDate = `${from} 00:00:00`;
+    const endDate = `${to} 23:59:59`;
 
-    await exportOrdersToExcel(startDate, endDate, res, `orders-${from}-to-${to}.xlsx`);
+    console.log("EXPORT EXCEL DATE RANGE:", startDate, endDate);
+
+    const filename = `orders-${from}-to-${to}.xlsx`;
+
+    await exportOrdersToExcel(startDate, endDate, res, filename);
   } catch (err) {
     console.error("EXPORT EXCEL RANGE ERROR:", err);
-    res.status(500).json({ success: false, error: "Server error" });
+    res.status(500).json({
+      success: false,
+      error: err.message || "Server error",
+    });
   }
 });
+
 
 // ===== HELPER FUNCTION TO EXPORT ORDERS =====
 async function exportOrdersToExcel(startDate, endDate, res, fileName) {
@@ -299,24 +378,7 @@ async function exportOrdersToExcel(startDate, endDate, res, fileName) {
 /* =======================================================
    GET ORDER BY ORDER_NO
 ======================================================= */
-router.get("/get/:order_no", async (req, res) => {
-  try {
-    const { order_no } = req.params;
-
-    const [rows] = await pool.query(
-      "SELECT * FROM orders WHERE order_no = ?",
-      [order_no]
-    );
-
-    if (!rows.length)
-      return res.json({ success: false, message: "Order not found" });
-
-    res.json({ success: true, order: rows[0] });
-  } catch (err) {
-    console.log("Error fetching order:", err);
-    res.status(500).json({ success: false, error: "Server error" });
-  }
-});
+router.get("/get/:order_no", async (req, res) => { try { const { order_no } = req.params; const sql = ` SELECT o.*, s.waybill, s.ship_date FROM orders o LEFT JOIN ( SELECT order_no, waybill, ship_date FROM shipments WHERE order_no = ? ORDER BY id DESC LIMIT 1 ) s ON o.order_no = s.order_no WHERE o.order_no = ? `; const [rows] = await pool.query(sql, [order_no, order_no]); if (!rows.length) { return res.json({ success: false, message: "Order not found" }); } res.json({ success: true, order: rows[0] }); } catch (err) { console.error("Error fetching order:", err); res.status(500).json({ success: false, error: "Server error" }); } });
 
 /* =======================================================
    CREATE ORDER AS PENDING
@@ -429,9 +491,14 @@ router.post("/create-order-pending", async (req, res) => {
 ======================================================= */
 router.get("/all", async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM orders ORDER BY id DESC"
-    );
+    const sql = `
+      SELECT o.*, s.waybill, s.ship_date
+      FROM orders o
+      LEFT JOIN shipments s ON o.order_no = s.order_no
+      ORDER BY o.id DESC
+    `;
+
+    const [rows] = await pool.query(sql);
 
     res.json({
       success: true,
@@ -476,6 +543,10 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
+
+
+
 
 
 /* =======================================================
@@ -564,6 +635,9 @@ router.post("/update-status", async (req, res) => {
     conn.release();
   }
 });
+
+
+
 
 /* =======================================================
    PAYMENT SUCCESS — Update + Reduce Stock

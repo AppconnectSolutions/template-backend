@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import html2pdf from "html2pdf.js";
+import { useNavigate } from "react-router-dom";
+
 
 export default function OrderDetails() {
   const [orders, setOrders] = useState([]);
@@ -9,6 +11,8 @@ export default function OrderDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const searchFields = ["order_no", "name", "city", "mobile"];
+
 
   const today = new Date();
 
@@ -16,18 +20,13 @@ export default function OrderDetails() {
 
 
   // ===== Monthly Excel state =====
-  const [exportYear, setExportYear] = useState(today.getFullYear());
-  const [exportMonth, setExportMonth] = useState(
-    String(today.getMonth() + 1).padStart(2, "0")
-  );
-
-  // ===== Range Excel state =====
-  const [fromMonth, setFromMonth] = useState(
-    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`
-  );
-  const [toMonth, setToMonth] = useState(
-    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`
-  );
+  // ===== Date Range Excel state =====
+const [fromDate, setFromDate] = useState(
+  today.toISOString().split("T")[0]
+);
+const [toDate, setToDate] = useState(
+  today.toISOString().split("T")[0]
+);
 
   const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -40,43 +39,56 @@ export default function OrderDetails() {
   const signSrc = basePublicUrl + "/assets/images/vita_signature.png";
 
   /* ---------------- LOAD ORDERS ---------------- */
-  const loadOrders = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(`${API}/api/orders/all`);
-      if (res.data.success) {
-        setOrders(res.data.orders);
-        setFiltered(res.data.orders);
-      } else {
-        setError("No orders found");
-      }
-    } catch (err) {
-      console.error("ORDER LOAD ERROR:", err);
-      setError("Failed to load orders");
-    } finally {
-      setLoading(false);
+const loadOrders = async () => {
+  try {
+    setLoading(true);
+    const res = await axios.get(`${API}/api/orders/all`);
+    if (res.data.success) {
+      setOrders(res.data.orders);
+      setFiltered(res.data.orders); // set once
+    } else {
+      setError("No orders found");
     }
-  };
+  } catch (err) {
+    console.error("ORDER LOAD ERROR:", err);
+    setError("Failed to load orders");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
 
   useEffect(() => {
     loadOrders();
   }, []);
+  useEffect(() => { setFiltered(orders); }, [orders]);
+  
 
   /* ---------------- SEARCH ---------------- */
-  const handleSearch = (e) => {
-    const v = e.target.value.toLowerCase();
-    setSearch(v);
+ // Inside OrderDetails.jsx
 
-    setFiltered(
-      orders.filter(
-        (o) =>
-          (o.order_no || "").toLowerCase().includes(v) ||
-          (o.name || "").toLowerCase().includes(v) ||
-          (o.city || "").toLowerCase().includes(v) ||
-          (o.mobile || "").toLowerCase().includes(v)
-      )
-    );
-  };
+// ---------------- SEARCH ----------------
+const handleSearch = (e) => {
+  const query = e.target.value.trim().toLowerCase();
+  setSearch(e.target.value);
+
+  if (!query) {
+    setFiltered(orders);
+    return;
+  }
+
+  const result = orders.filter((order) =>
+    searchFields.some((field) =>
+      String(order[field] ?? "").toLowerCase().includes(query)
+    )
+  );
+
+  setFiltered(result);
+};
+
+
 
   /* ---------------- HELPERS ---------------- */
   const formatMoney = (amt) =>
@@ -189,18 +201,24 @@ export default function OrderDetails() {
     html2pdf().set(opt).from(element).save();
   };
 
-  /* ---------------- SINGLE MONTH EXCEL ---------------- */
-  const handleDownloadMonthlyExcel = () => {
-    const url = `${API}/api/orders/export-excel?year=${exportYear}&month=${exportMonth}`;
-    window.open(url, "_blank");
-  };
+  
 
   /* ---------------- RANGE EXCEL ---------------- */
-  const handleDownloadRangeExcel = () => {
-    if (!fromMonth || !toMonth) return;
-    const url = `${API}/api/orders/export-excel-range?from=${fromMonth}&to=${toMonth}`;
-    window.open(url, "_blank");
-  };
+ const handleDownloadRangeExcel = () => {
+  if (!fromDate || !toDate) {
+    alert("Please select From Date and To Date");
+    return;
+  }
+
+  if (fromDate > toDate) {
+    alert("From Date cannot be after To Date");
+    return;
+  }
+
+  const url = `${API}/api/orders/export-excel-range?from=${fromDate}&to=${toDate}`;
+  window.open(url, "_blank");
+};
+
 
   return (
     <main className="main-content-wrapper">
@@ -210,71 +228,41 @@ export default function OrderDetails() {
 
           <div className="d-flex align-items-center gap-2">
             <input
-              type="text"
-              className="form-control"
-              style={{ width: "230px" }}
-              placeholder="Search Order No / Name / City / Mobile..."
-              value={search}
-              onChange={handleSearch}
-            />
+  type="text"
+  className="form-control"
+  style={{ width: "230px" }}
+  placeholder="Search Order No / Name / City / Mobile..."
+  value={search}   // now shows exactly what user types
+  onChange={handleSearch}
+/>
 
-            {/* Single Month Excel */}
-            <input
-              type="number"
-              className="form-control"
-              style={{ width: "80px" }}
-              value={exportYear}
-              min="2020"
-              max="2100"
-              onChange={(e) => setExportYear(e.target.value)}
-            />
-            <select
-              className="form-select"
-              style={{ width: "95px" }}
-              value={exportMonth}
-              onChange={(e) => setExportMonth(e.target.value)}
-            >
-              <option value="01">Jan</option>
-              <option value="02">Feb</option>
-              <option value="03">Mar</option>
-              <option value="04">Apr</option>
-              <option value="05">May</option>
-              <option value="06">Jun</option>
-              <option value="07">Jul</option>
-              <option value="08">Aug</option>
-              <option value="09">Sep</option>
-              <option value="10">Oct</option>
-              <option value="11">Nov</option>
-              <option value="12">Dec</option>
-            </select>
-            <button
-              className="btn btn-sm btn-success fw-semibold"
-              onClick={handleDownloadMonthlyExcel}
-            >
-              Monthly Excel
-            </button>
+
+            
 
             {/* Range Excel */}
-            <input
-              type="month"
-              className="form-control"
-              style={{ width: "140px" }}
-              value={fromMonth}
-              onChange={(e) => setFromMonth(e.target.value)}
-            />
-            <input
-              type="month"
-              className="form-control"
-              style={{ width: "140px" }}
-              value={toMonth}
-              onChange={(e) => setToMonth(e.target.value)}
-            />
-            <button
-              className="btn btn-sm btn-info fw-semibold"
-              onClick={handleDownloadRangeExcel}
-            >
-              Download Range Excel
-            </button>
+          <input
+  type="date"
+  className="form-control"
+  style={{ width: "150px" }}
+  value={fromDate}
+  onChange={(e) => setFromDate(e.target.value)}
+/>
+
+<input
+  type="date"
+  className="form-control"
+  style={{ width: "150px" }}
+  value={toDate}
+  onChange={(e) => setToDate(e.target.value)}
+/>
+
+<button
+  className="btn btn-sm btn-info fw-semibold"
+  onClick={handleDownloadRangeExcel}
+>
+  Download Date Range Excel
+</button>
+
           </div>
         </div>
 
@@ -303,6 +291,8 @@ export default function OrderDetails() {
    SINGLE ORDER INVOICE
 ===================================================== */
 function OrderInvoice({ serial, order, formatMoney, formatDate, numberToWords, logoSrc, signSrc, onDownload }) {
+  const navigate = useNavigate();
+
   const GST_RATE = 5;
   let items = [];
   let hsn = "";
@@ -440,6 +430,12 @@ function OrderInvoice({ serial, order, formatMoney, formatDate, numberToWords, l
             <span style={{ fontWeight: "bold" }}>HSN Code:</span> {hsn}
           </div>
             )}
+            {order.waybill && (
+    <div>
+      <span style={{ fontWeight: "bold" }}>Waybill:</span> {order.waybill}
+    </div>
+  )}
+  
  
 
               
@@ -491,6 +487,10 @@ function OrderInvoice({ serial, order, formatMoney, formatDate, numberToWords, l
               <span style={{ fontWeight: "bold" }}>Order Date:</span>{" "}
               {formatDate(order.order_date)}
             </div>
+            <div>
+  <span style={{ fontWeight: "bold" }}>Ship Date:</span>{" "}
+  {order.ship_date ? formatDate(order.ship_date) : "Not shipped yet"}
+</div>
           </div>
           <div style={{ textAlign: "right" }}>
             <div>
@@ -590,11 +590,28 @@ function OrderInvoice({ serial, order, formatMoney, formatDate, numberToWords, l
       </div>
 
       {/* ACTION BUTTONS OUTSIDE PDF AREA */}
-      <div className="mt-3 d-flex justify-content-end">
-        <button className="btn btn-primary btn-sm" onClick={() => onDownload(order.order_no)}>
-          Download PDF
-        </button>
-      </div>
+      
+      <div className="mt-3 d-flex justify-content-end gap-2">
+  <button
+    className="btn btn-primary btn-sm"
+    onClick={() => onDownload(order.order_no)}
+  >
+    Download PDF
+  </button>
+
+  {order.order_no && (
+  <button
+    className="btn btn-warning btn-sm"
+   onClick={() => navigate(`/update-shipment/${order.order_no}`)}
+
+
+
+  >
+    Update Shipment
+  </button>
+)}
+
+</div>
     </div>
   );
 }

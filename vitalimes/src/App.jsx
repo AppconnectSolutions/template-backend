@@ -64,6 +64,28 @@ import AllProducts from "./components/users/AllProducts.jsx";
 import CartDrawer from "./components/users/CartDrawer.jsx";
 import { useCart } from "./components/users/CartContext";
 
+
+import { useEffect } from "react";
+
+export function useAnimateOnScroll() {
+  useEffect(() => {
+    const sections = document.querySelectorAll(".section");
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    sections.forEach(section => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+}
+
 /* ---------------- USER LAYOUT ---------------- */
 function UserLayout() {
   const { openCart } = useCart();
@@ -80,9 +102,9 @@ function UserLayout() {
 /* ---------------- HOME PAGE ---------------- */
 function HomePage() {
   const navigate = useNavigate();
+  useAnimateOnScroll();
 
   const handleHomeClick = (e) => {
-    // ❌ Ignore clicks on interactive elements
     const ignoreSelectors = [
       "button",
       "a",
@@ -95,30 +117,29 @@ function HomePage() {
       ".swiper-button-next",
       ".swiper-button-prev",
     ];
-
     if (ignoreSelectors.some((selector) => e.target.closest(selector))) {
       return;
     }
-
-    // ✅ Otherwise redirect
     navigate("/products");
   };
 
   return (
     <main onClick={handleHomeClick} style={{ cursor: "pointer" }}>
-      <Banner />
-      <UserCategories />
-      <WhyChoose />
-      <TopPicks />
-      <Recipes />
-      <DailyBestSells />
-      <ProductGrid />
-      <Testimonials />
+      <div className="section"><Banner /></div>
+      <div className="section"><UserCategories /></div>
+      <div className="section"><WhyChoose /></div>
+      <div className="section"><TopPicks /></div>
+      <div className="section"><Recipes /></div>
+      <div className="section"><DailyBestSells /></div>
+      <div className="section"><ProductGrid /></div>
+      <div className="section"><Testimonials /></div>
     </main>
   );
 }
+
 /* ---------------- MAIN APP ROUTER ---------------- */
 function App() {
+  useAnimateOnScroll();
   return (
     <CartProvider>
       <Router>
@@ -185,10 +206,9 @@ function App() {
               path="/order-details/:order_no"
               element={<OrderDetailsSingle />}
             />
-            <Route
-              path="/update-shipment/:id"
-              element={<UpdateShipment />}
-            />
+           <Route path="/update-shipment/:order_no" element={<UpdateShipment />} />
+
+
             <Route path="/admin/users" element={<Users />} />
           </Route>
         </Routes>

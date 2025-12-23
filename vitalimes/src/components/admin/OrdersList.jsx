@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import InvoiceView from "./InvoiceView";
 
 export default function OrdersList() {
   const [orders, setOrders] = useState([]);
+  const [showInvoice, setShowInvoice] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [orderNo, setOrderNo] = useState(""); const [invoiceNo, setInvoiceNo] = useState(""); const [mobile, setMobile] = useState(""); const [customerName, setCustomerName] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-  // Load all orders
+  /* ---------------- LOAD ORDERS ---------------- */
   const loadOrders = async () => {
     try {
       const res = await axios.get(`${API_URL}/api/orders/all`);
@@ -18,11 +23,31 @@ export default function OrdersList() {
     }
   };
 
+
+
+const handleDownload = () => {
+  const query = new URLSearchParams({
+    orderNo: orderNo.trim(),
+    invoiceNo: invoiceNo.trim(),
+    mobile: mobile.trim(),
+    customerName: customerName.trim(),
+  }).toString();
+
+  window.open(`${API_URL}/api/orders/export-excel-filter?${query}`, "_blank");
+};
+
+
   useEffect(() => {
     loadOrders();
   }, []);
 
-  // Update order status
+  /* ---------------- BODY SCROLL LOCK FOR MODAL ---------------- */
+  useEffect(() => {
+    document.body.style.overflow = showInvoice ? "hidden" : "auto";
+    return () => (document.body.style.overflow = "auto");
+  }, [showInvoice]);
+
+  /* ---------------- UPDATE STATUS ---------------- */
   const updateStatus = async (order_no, newStatus) => {
     try {
       await axios.post(`${API_URL}/api/orders/update-status`, {
@@ -35,20 +60,17 @@ export default function OrdersList() {
     }
   };
 
-  // PRODUCT FORMATTER
+  /* ---------------- HELPERS ---------------- */
   const getProductDetails = (products_json) => {
     if (!products_json) return "-";
-
     try {
       const items = JSON.parse(products_json);
-
       return items
         .map((p) => {
           const title = p.title || "Product";
           const weight = p.weight ? `${p.weight}g` : "";
           const units = p.units ? `${p.units} pack` : "";
           const qty = p.qty ? `Qty: ${p.qty}` : "";
-
           return [title, weight, units, qty].filter(Boolean).join(" | ");
         })
         .join("\n");
@@ -60,6 +82,7 @@ export default function OrdersList() {
   const getFullAddress = (o) =>
     `${o.address}, ${o.city}, ${o.state}, ${o.country} - ${o.pin}`;
 
+  /* ---------------- RENDER ---------------- */
   return (
     <div
       className="w-100 py-4"
@@ -74,17 +97,32 @@ export default function OrdersList() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="fw-bold">Orders</h2>
       </div>
+     <input
+  type="text"
+  className="form-control"
+  style={{ width: 300 }}
+  placeholder="Search by Order No, Invoice, Mobile, or Name"
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+/>
 
-      {/* MAIN CARD */}
+<button
+  className="btn btn-success"
+  onClick={() => {
+    const query = new URLSearchParams({ query: searchQuery.trim() }).toString();
+    window.open(`${API_URL}/api/orders/export-excel-filter?${query}`, "_blank");
+  }}
+>
+  Download Excel
+</button>
+ {/* MAIN CARD */}
       <div
         className="card border-0 mx-auto"
         style={{
-          width: "100%",
           borderRadius: "22px",
           background: "rgba(255, 255, 255, 0.55)",
           backdropFilter: "blur(10px)",
           boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
-          overflow: "hidden",
         }}
       >
         <div className="card-body p-0">
@@ -104,23 +142,22 @@ export default function OrdersList() {
                   <th>Date</th>
                   <th>Action</th>
                   <th>Prepare</th>
+                  <th>Invoice</th>
                 </tr>
               </thead>
 
               <tbody>
-                {orders.length > 0 ? (
+                {orders.length ? (
                   orders.map((o) => (
-                    <tr key={o.id}>
+                    <tr key={o.order_no}>
                       <td>{o.order_no}</td>
                       <td>{o.invoice_no || "-"}</td>
                       <td>{o.name}</td>
 
-                      {/* PRODUCTS */}
-                      <td style={{ whiteSpace: "pre-wrap", maxWidth: "250px" }}>
+                      <td style={{ whiteSpace: "pre-wrap", maxWidth: 250 }}>
                         {getProductDetails(o.products_json)}
                       </td>
 
-                      {/* ADDRESS */}
                       <td style={{ whiteSpace: "pre-wrap" }}>
                         {getFullAddress(o)}
                       </td>
@@ -154,11 +191,10 @@ export default function OrdersList() {
 
                       <td>{o.order_date}</td>
 
-                      {/* STATUS DROPDOWN */}
                       <td>
                         <select
                           className="form-select"
-                          style={{ width: "140px" }}
+                          style={{ width: 140 }}
                           value={o.status}
                           onChange={(e) =>
                             updateStatus(o.order_no, e.target.value)
@@ -172,7 +208,6 @@ export default function OrdersList() {
                         </select>
                       </td>
 
-                      {/* PREPARE SHIPMENT */}
                       <td>
                         <button
                           className="btn btn-outline-primary btn-sm rounded-pill px-3"
@@ -183,11 +218,23 @@ export default function OrdersList() {
                           Prepare
                         </button>
                       </td>
+
+                      <td>
+                        <button
+                          className="btn btn-outline-secondary btn-sm"
+                          onClick={() => {
+                            setSelectedOrder(o);
+                            setShowInvoice(true);
+                          }}
+                        >
+                          👁️
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="12" className="text-center py-4">
+                    <td colSpan="13" className="text-center py-4">
                       No orders found.
                     </td>
                   </tr>
@@ -201,13 +248,52 @@ export default function OrdersList() {
             <span className="fw-semibold">
               Showing {orders.length} orders
             </span>
-
             <span className="text-muted small">
               *Sorted by latest orders
             </span>
           </div>
         </div>
       </div>
+
+      {/* ---------------- INVOICE MODAL ---------------- */}
+      {showInvoice && selectedOrder && (
+        <>
+          <div className="modal fade show d-block" tabIndex="-1">
+            <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">
+                    Invoice – {selectedOrder.order_no}
+                  </h5>
+                  <button
+                    className="btn-close"
+                    onClick={() => setShowInvoice(false)}
+                  />
+                </div>
+
+                <div className="modal-body">
+                  <InvoiceView
+                    order={selectedOrder}
+                    formatMoney={(a) =>
+                      new Intl.NumberFormat("en-IN", {
+                        style: "currency",
+                        currency: "INR",
+                      }).format(a)
+                    }
+                    formatDate={(d) =>
+                      new Date(d).toLocaleDateString("en-IN")
+                    }
+                    numberToWords={(n) => `${n} only`}
+                    logoSrc="/assets/images/vita_logo.svg"
+                    signSrc="/assets/images/vita_signature.png"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="modal-backdrop fade show"></div>
+        </>
+      )}
     </div>
   );
 }

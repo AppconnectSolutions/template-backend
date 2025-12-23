@@ -108,6 +108,16 @@ export default function Login() {
           backdropFilter: "blur(20px)",
         }}
       >
+
+        <div className="mb-3">
+  <button
+    className="btn btn-sm fw-semibold text-white"
+    style={{ backgroundColor: "#2e7d32", borderColor: "#2e7d32" }}
+    onClick={() => navigate("/")}
+  >
+    ← Back to Home
+  </button>
+</div>
         {/* Logo + Title */}
         <div className="text-center mb-4">
           <img

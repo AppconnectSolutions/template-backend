@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useCart } from "./CartContext.jsx";
+import { ChevronLeft, ChevronRight } from "react-feather";
 
 export default function Navbar({ openCart }) {
   const { cartCount } = useCart();
@@ -44,19 +45,85 @@ export default function Navbar({ openCart }) {
     { label: "Combos", to: "/combos" },
   ];
 
+  const carouselItems = [
+  "Welcome to Vitalimes",
+  "Switch to Purity, Switch to Organic",
+  "Next Day Delivery Available* | Shop Now",
+  "Pure Lemon. Pure Wellness.",
+];
+
+const [carouselIndex, setCarouselIndex] = useState(0);
+
+// Auto-slide every 5 seconds
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCarouselIndex((prev) =>
+      prev === carouselItems.length - 1 ? 0 : prev + 1
+    );
+  }, 3000); // 5 seconds
+
+  return () => clearInterval(interval); // cleanup
+}, []);
+
   return (
     <>
       <header className="sticky-top">
         {/* TOP STRIP */}
-        <div className="bg-dark text-white small py-1">
-          <div className="container d-flex align-items-center justify-content-between">
-            <div className="text-center flex-grow-1">
-              <span className="fw-semibold">
-                Welcome to | Use code <span className="text-warning">Vitalimes</span>
-              </span>
-            </div>
-          </div>
-        </div>
+         <div className="top-offer-strip">
+  <div className="container top-offer-inner">
+
+    
+
+    {/* CENTER TIMER */}
+    <div className="offer-timer">
+      <h6>Pure Lemon. Pure Wellness.</h6>
+    </div>
+
+    {/* RIGHT WHATSAPP */}
+    <a
+      href="https://wa.me/918072812904"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="offer-whatsapp"
+    >
+      <i className="bi bi-whatsapp"></i>
+      <span>Need help? Call Us: +91 80728 12904</span>
+    </a>
+
+  </div>
+</div>
+
+
+        
+        <div className="bg-black text-white py-2">
+  <div className="container d-flex align-items-center justify-content-between">
+    <button
+      className="btn btn-link text-white p-0"
+      onClick={() =>
+        setCarouselIndex((prev) =>
+          prev === 0 ? carouselItems.length - 1 : prev - 1
+        )
+      }
+    >
+      <ChevronLeft size={18} />
+    </button>
+
+    <div className="text-center flex-grow-1 fw-semibold">
+      {carouselItems[carouselIndex]}
+    </div>
+
+    <button
+      className="btn btn-link text-white p-0"
+      onClick={() =>
+        setCarouselIndex((prev) =>
+          prev === carouselItems.length - 1 ? 0 : prev + 1
+        )
+      }
+    >
+      <ChevronRight size={18} />
+    </button>
+  </div>
+</div>
 
         {/* MAIN NAVBAR */}
         <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">

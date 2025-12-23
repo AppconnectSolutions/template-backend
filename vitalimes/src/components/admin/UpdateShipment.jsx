@@ -4,15 +4,16 @@ import { useParams, useNavigate } from "react-router-dom";
 
 // PDF & OCR libraries
 import * as pdfjsLib from "pdfjs-dist";
-
 import Tesseract from "tesseract.js";
+
 if (typeof window !== "undefined") {
   pdfjsLib.GlobalWorkerOptions.workerSrc =
     `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 }
 
 export default function UpdateShipment() {
-  const { id } = useParams();
+  // ⚠️ Use the param name that matches backend: order_no
+  const { order_no } = useParams();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -22,9 +23,7 @@ export default function UpdateShipment() {
 
   const [uploading, setUploading] = useState(false);
 
-  // ---------------------------------------------------------
-  // Convert PDF → High Quality Image
-  // ---------------------------------------------------------
+  // Convert PDF → Image
   const pdfToImage = async (file) => {
     const buffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
@@ -42,9 +41,7 @@ export default function UpdateShipment() {
     return canvas.toDataURL("image/png");
   };
 
-  // ---------------------------------------------------------
   // Extract Waybill from OCR
-  // ---------------------------------------------------------
   const extractWaybillText = (text) => {
     return (
       text.match(/AWB[\s:-]*([0-9A-Za-z]+)/i)?.[1] ||
@@ -55,31 +52,18 @@ export default function UpdateShipment() {
     );
   };
 
-  // ---------------------------------------------------------
-  // Extract SAR Logistics Date Format
-  // ---------------------------------------------------------
-  // Extract SAR Logistics Date: 17 Nov 2025 (even if newline exists)
-const extractShipDate = (text) => {
-  // Normalize text (remove multiple newlines)
-  const clean = text.replace(/\n+/g, " ");
+  // Extract Ship Date from OCR
+  const extractShipDate = (text) => {
+    const clean = text.replace(/\n+/g, " ");
+    const match = clean.match(
+      /D[a-z\s]*e[:\s]*([0-9]{1,2})\s+([A-Za-z]{3,9})\s+([0-9]{4})/i
+    );
 
-  // Very flexible date keyword detection (matches 'Date', 'Dote', 'D te', 'Dat e')
-  const match = clean.match(/D[a-z\s]*e[:\s]*([0-9]{1,2})\s+([A-Za-z]{3,9})\s+([0-9]{4})/i);
+    if (match) return `${match[1]} ${match[2]} ${match[3]}`;
+    return "";
+  };
 
-  if (match) {
-    return `${match[1]} ${match[2]} ${match[3]}`;
-  }
-
-  return "";
-};
-
-
-
-
-
-  // ---------------------------------------------------------
-  // Handle PDF Upload
-  // ---------------------------------------------------------
+  // Handle PDF upload
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -88,20 +72,12 @@ const extractShipDate = (text) => {
 
     try {
       const imgSrc = await pdfToImage(file);
-
-      // OCR TEXT
       const ocr = await Tesseract.recognize(imgSrc, "eng");
       const text = ocr.data.text;
 
-      // Extracted Fields
-      const waybill = extractWaybillText(text);
-      const shipDate = extractShipDate(text);
-
-
-
       setForm({
-        waybill,
-        ship_date: shipDate,
+        waybill: extractWaybillText(text),
+        ship_date: extractShipDate(text),
       });
 
       alert("PDF processed successfully!");
@@ -113,29 +89,28 @@ const extractShipDate = (text) => {
     setUploading(false);
   };
 
-  // ---------------------------------------------------------
-  // Save Shipment
-  // ---------------------------------------------------------
+  // Save shipment (only waybill & ship_date)
   const saveShipment = async () => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/shipments/update/${id}`,
-        form
-      );
+  `http://localhost:5000/api/shipments/update-shipment/${order_no}`,
+  {
+    waybill: form.waybill,
+    ship_date: form.ship_date,
+  }
+);
+
 
       if (res.data.success) {
-        alert("Shipment updated!");
+        alert("Shipment updated successfully!");
         navigate("/orders/details");
       }
     } catch (err) {
-      alert("Failed to save shipment");
       console.error(err);
+      alert("Error updating shipment");
     }
   };
 
-  // ---------------------------------------------------------
-  // UI
-  // ---------------------------------------------------------
   return (
     <div className="container mt-4">
       <h2 className="fw-bold mb-4">Update Shipment</h2>

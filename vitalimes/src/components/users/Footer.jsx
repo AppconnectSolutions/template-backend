@@ -1,3 +1,5 @@
+
+
 import React from "react";
 
 export default function Footers() {
@@ -17,7 +19,7 @@ export default function Footers() {
         {/* TOP GRID */}
         <div className="row g-5 mb-5">
 
-          {/* COLUMN 1: ABOUT */}
+          {/* ABOUT */}
           <div className="col-12 col-md-6 col-lg-3">
             <img
               src="/assets/images/vita_logo.svg"
@@ -32,7 +34,7 @@ export default function Footers() {
             </p>
           </div>
 
-          {/* COLUMN 2: EXPLORE */}
+          {/* EXPLORE */}
           <div className="col-6 col-md-3 col-lg-2">
             <h5 className="footer-title">Explore</h5>
             <ul className="footer-list">
@@ -45,7 +47,7 @@ export default function Footers() {
             </ul>
           </div>
 
-          {/* COLUMN 3: USEFUL LINKS */}
+          {/* USEFUL LINKS */}
           <div className="col-6 col-md-3 col-lg-2">
             <h5 className="footer-title">Useful Links</h5>
             <ul className="footer-list">
@@ -57,79 +59,99 @@ export default function Footers() {
             </ul>
           </div>
 
-          {/* COLUMN 4: CITIES */}
+          {/* CITIES */}
           <div className="col-6 col-md-3 col-lg-2">
             <h5 className="footer-title">All Over India</h5>
             <ul className="footer-list">
-              <li><a href="/#">Chennai</a></li>
-              <li><a href="/#">Bangalore</a></li>
-              <li><a href="/#">Coimbatore</a></li>
-              <li><a href="/#">Hyderabad</a></li>
-              <li><a href="/#">Madurai</a></li>
+              <li><a href="#">Chennai</a></li>
+              <li><a href="#">Bangalore</a></li>
+              <li><a href="#">Coimbatore</a></li>
+              <li><a href="#">Hyderabad</a></li>
+              <li><a href="#">Madurai</a></li>
             </ul>
           </div>
-                         {/* CONTACT DETAILS */}
-<div className="col-12 col-md-6 col-lg-3">
-  <h5 className="footer-title">Contact Details</h5>
 
-  <p className="footer-text">
-    VITALIME AGROTECH PRIVATE LIMITED <br />
-    Kovilpatti – 628503
-  </p>
+          {/* CONTACT DETAILS */}
+          <div className="col-12 col-md-6 col-lg-3">
+            <h5 className="footer-title">Contact Details</h5>
 
-  <p className="footer-text">Phone: +91-9042417179</p>
-  <p className="footer-text">Email: contact@vitalimes.com</p>
+            <p className="footer-text">
+              VITALIME AGROTECH PRIVATE LIMITED <br />
+              Kovilpatti – 628503
+            </p>
 
-  {/* SUBSCRIBE */}
-  <div className="d-flex mt-3">
-    <input
-      type="email"
-      placeholder="Enter your email"
-      className="form-control"
-      style={{
-        borderRadius: "10px",
-        height: "45px",
-        maxWidth: "240px",
-      }}
-    />
-    <button
-      className="btn btn-light ms-2"
-      style={{
-        height: "45px",
-        borderRadius: "10px",
-        padding: "0 18px",
-        fontWeight: "bold",
-      }}
-    >
-      →
-    </button>
-  </div>
+            <p className="footer-text">Phone: +91-9042417179</p>
+            <p className="footer-text">Email: contact@vitalimes.com</p>
 
-  {/* SOCIAL ICONS */}
-  <div className="d-flex gap-3 mt-4">
-    <a className="social-btn" href="https://facebook.com">
-      <i className="bi bi-facebook"></i>
-    </a>
-    <a className="social-btn" href="https://instagram.com">
-      <i className="bi bi-instagram"></i>
-    </a>
-    <a className="social-btn" href="https://youtube.com">
-      <i className="bi bi-youtube"></i>
-    </a>
-    <a className="social-btn" href="https://linkedin.com">
-      <i className="bi bi-linkedin"></i>
-    </a>
-  </div>
+            {/* WHATSAPP CONTACT */}
+            <p className="footer-text d-flex align-items-center gap-2">
+              <i
+                className="bi bi-whatsapp"
+                style={{ color: "#25D366", fontSize: "18px" }}
+              ></i>
+              <a
+                href="https://wa.me/918072812904"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#d9e8db", textDecoration: "none" }}
+              >
+                +91 80728 12904
+              </a>
+            </p>
 
-  {/* WE ACCEPT */}
-  
-</div>
+            {/* SUBSCRIBE */}
+            <div className="d-flex mt-3">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="form-control"
+                style={{
+                  borderRadius: "10px",
+                  height: "45px",
+                  maxWidth: "240px",
+                }}
+              />
+              <button
+                className="btn btn-light ms-2"
+                style={{
+                  height: "45px",
+                  borderRadius: "10px",
+                  padding: "0 18px",
+                  fontWeight: "bold",
+                }}
+              >
+                →
+              </button>
+            </div>
 
-        
-
+            {/* SOCIAL ICONS */}
+            <div className="d-flex gap-3 mt-4">
+              <a className="social-btn" href="https://facebook.com">
+                <i className="bi bi-facebook"></i>
+              </a>
+              <a className="social-btn" href="https://instagram.com">
+                <i className="bi bi-instagram"></i>
+              </a>
+              <a className="social-btn" href="https://youtube.com">
+                <i className="bi bi-youtube"></i>
+              </a>
+              <a className="social-btn" href="https://linkedin.com">
+                <i className="bi bi-linkedin"></i>
+              </a>
+              <a
+                className="social-btn whatsapp-btn"
+                href="https://wa.me/918072812904"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+              >
+                <i className="bi bi-whatsapp"></i>
+              </a>
+            </div>
+          </div>
         </div>
 
-        {/* BOTTOM SECTION */}
+        {/* BOTTOM */}
         <div
           className="text-center mt-5 pt-4"
           style={{
@@ -143,26 +165,30 @@ export default function Footers() {
             © {currentYear} Vitalimes. All rights reserved.
           </p>
           <p style={{ marginTop: "5px" }}>
-             ❤️  Designed & Developed by {" "}
+            ❤️ Designed & Developed by{" "}
             <a
               href="https://www.appconnectsolutions.com/"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#76ffb3", fontSize: "16px", fontWeight: 800, textDecoration: 'none' }}
+              style={{
+                color: "#76ffb3",
+                fontSize: "16px",
+                fontWeight: 800,
+                textDecoration: "none",
+              }}
             >
               AppConnect Solutions
-            </a>
-            {" "}❤️.
+            </a>{" "}
+            ❤️
           </p>
         </div>
       </div>
 
-      {/* CUSTOM CSS */}
+      {/* CSS */}
       <style>{`
         .footer-title {
           font-size: 18px;
           font-weight: 800;
-          color: #ffffff;
           margin-bottom: 18px;
         }
         .footer-list li {
@@ -197,8 +223,13 @@ export default function Footers() {
           background: #ffffff;
           color: #1f3b2f;
         }
-        .payment-icons img {
-          margin-right: 10px;
+        .whatsapp-btn {
+          border-color: #25D366;
+          color: #25D366;
+        }
+        .whatsapp-btn:hover {
+          background: #25D366;
+          color: #ffffff;
         }
       `}</style>
     </footer>
