@@ -9,16 +9,65 @@ export default function ContactUs() {
     message: '',
   });
 
+  const [loading, setLoading] = useState(false);
+const [status, setStatus] = useState({ type: "", msg: "" });
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert('Your message has been sent!');
-    // TODO: add API call to submit form
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!formData.name || !formData.email || !formData.message) {
+    setStatus({ type: "error", msg: "Please fill all required fields" });
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setStatus({ type: "", msg: "" });
+
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/contact`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    const contentType = res.headers.get("content-type");
+
+    let data;
+    if (contentType && contentType.includes("application/json")) {
+      data = await res.json();
+    } else {
+      // If server returned HTML instead of JSON
+      const text = await res.text();
+      throw new Error(
+        `Server did not return JSON. Response: ${text.substring(0, 200)}...`
+      );
+    }
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || "Something went wrong");
+    }
+
+    setStatus({
+      type: "success",
+      msg: "Your message has been sent successfully!",
+    });
+
+    setFormData({ name: "", email: "", category: "", message: "" });
+  } catch (err) {
+    console.error("Form submission error:", err);
+    setStatus({ type: "error", msg: err.message || "Failed to send message" });
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <div className="contact-page">
@@ -91,6 +140,16 @@ export default function ContactUs() {
           <div className="row align-items-center">
             <div className="col-lg-7">
               <h3>Fill Up The Form If You Have Any Question</h3>
+              {status.msg && (
+  <div
+    className={`alert ${
+      status.type === "success" ? "alert-success" : "alert-danger"
+    }`}
+  >
+    {status.msg}
+  </div>
+)}
+
               <form onSubmit={handleSubmit} className="mt-3">
                 <div className="row g-3">
                   <div className="col-md-6">
@@ -111,7 +170,10 @@ export default function ContactUs() {
                     <textarea className="form-control" rows="5" name="message" placeholder="Write Message Here" value={formData.message} onChange={handleInputChange} />
                   </div>
                   <div className="col-md-12">
-                    <button className="btn btn-success">Send Message</button>
+                   <button className="btn btn-success" disabled={loading}>
+  {loading ? "Sending..." : "Send Message"}
+</button>
+
                   </div>
                 </div>
               </form>

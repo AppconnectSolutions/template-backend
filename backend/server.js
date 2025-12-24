@@ -9,7 +9,10 @@ import shipmentRoutes from "./routes/shipment.js";
 import authRoutes from "./routes/auth.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import path from "path";
-import { fileURLToPath } from "url";   // <-- missing import
+import { fileURLToPath } from "url";  
+import contactRoutes from "./routes/contact.js";
+import feedbackRoutes from "./routes/feedback.js";
+
 
 // emulate __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -33,6 +36,8 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/shipments", shipmentRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
 // Root URL
 app.get("/", (req, res) => {

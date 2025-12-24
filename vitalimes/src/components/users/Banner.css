@@ -55,7 +55,7 @@
   }
 }
 
-/* ================================
+/* ================================ TABLET (769px – 1024px) ================================ */ @media (max-width: 1024px) and (min-width: 769px) { .banner-text-block { left: 5%; top: 16%; max-width: 70%; } .banner-title { font-size: clamp(1.6rem, 5vw, 2.6rem); } .banner-sub { font-size: clamp(0.95rem, 3vw, 1.4rem); } }/* ================================
    MOBILE MODE (≤ 768px)
 ================================ */
 @media (max-width: 768px) {

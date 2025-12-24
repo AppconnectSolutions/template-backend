@@ -60,23 +60,21 @@ useEffect(() => {
     setCarouselIndex((prev) =>
       prev === carouselItems.length - 1 ? 0 : prev + 1
     );
-  }, 3000); // 5 seconds
-
-  return () => clearInterval(interval); // cleanup
+  }, 3000); // every 3 seconds
+  return () => clearInterval(interval);
 }, []);
+
 
   return (
     <>
       <header className="sticky-top">
         {/* TOP STRIP */}
-         <div className="top-offer-strip">
-  <div className="container top-offer-inner">
-
+         <div className="top-offer-strip bg-dark text-white py-2">
+  <div className="container d-flex flex-column flex-md-row align-items-center justify-content-between">
     
-
     {/* CENTER TIMER */}
-    <div className="offer-timer">
-      <h6>Pure Lemon. Pure Wellness.</h6>
+    <div className="offer-timer text-center text-md-start mb-2 mb-md-0 flex-grow-1">
+      <h6 className="mb-0">Pure Lemon. Pure Wellness.</h6>
     </div>
 
     {/* RIGHT WHATSAPP */}
@@ -84,19 +82,68 @@ useEffect(() => {
       href="https://wa.me/918072812904"
       target="_blank"
       rel="noopener noreferrer"
-      className="offer-whatsapp"
+      className="offer-whatsapp d-flex align-items-center gap-2"
+      style={{ whiteSpace: "nowrap" }}
     >
       <i className="bi bi-whatsapp"></i>
-      <span>Need help? Call Us: +91 80728 12904</span>
+      <span className="d-none d-sm-inline">Need help? Call Us: +91 80728 12904</span>
     </a>
 
   </div>
+
+  <style>
+    {`
+      .top-offer-strip {
+        font-size: 0.9rem;
+      }
+
+      .offer-timer h6 {
+        font-weight: 500;
+        margin: 0;
+      }
+
+      .offer-whatsapp i {
+        font-size: 1.2rem;
+      }
+
+      /* Small devices (<576px): only show icon */
+      @media (max-width: 575px) {
+        .offer-whatsapp span {
+          display: none;
+        }
+        .offer-timer {
+          font-size: 0.85rem;
+        }
+      }
+
+      /* Medium devices (sm - 576px to 767px) */
+      @media (min-width: 576px) and (max-width: 767px) {
+        .offer-timer {
+          font-size: 0.9rem;
+        }
+        .offer-whatsapp span {
+          font-size: 0.85rem;
+        }
+      }
+
+      /* Large devices (tablet & desktop) */
+      @media (min-width: 768px) {
+        .offer-timer {
+          font-size: 1rem;
+        }
+        .offer-whatsapp span {
+          font-size: 0.95rem;
+        }
+      }
+    `}
+  </style>
 </div>
+
 
 
         
         <div className="bg-black text-white py-2">
-  <div className="container d-flex align-items-center justify-content-between">
+  <div className="container d-flex align-items-center justify-content-between overflow-hidden">
     <button
       className="btn btn-link text-white p-0"
       onClick={() =>
@@ -108,9 +155,27 @@ useEffect(() => {
       <ChevronLeft size={18} />
     </button>
 
-    <div className="text-center flex-grow-1 fw-semibold">
-      {carouselItems[carouselIndex]}
-    </div>
+    <div className="flex-grow-1 position-relative overflow-hidden" style={{ height: "24px" }}>
+  {carouselItems.map((item, i) => {
+    const isActive = i === carouselIndex;
+    return (
+      <div
+        key={i}
+        className="carousel-text position-absolute top-50 start-50 translate-middle"
+        style={{
+          transition: "transform 0.3s ease, opacity 0.3s ease",
+          transform: isActive ? "translate(-50%, -50%)" : "translate(150%, -50%)",
+          opacity: isActive ? 1 : 0,
+          whiteSpace: "nowrap",
+          textAlign: "center",
+        }}
+      >
+        {item}
+      </div>
+    );
+  })}
+</div>
+
 
     <button
       className="btn btn-link text-white p-0"
@@ -123,7 +188,10 @@ useEffect(() => {
       <ChevronRight size={18} />
     </button>
   </div>
+
+  
 </div>
+
 
         {/* MAIN NAVBAR */}
         <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
@@ -264,33 +332,34 @@ useEffect(() => {
                 </button>
 
                 {/* CART ICON */}
-                <button
-                  type="button"
-                  className="btn btn-link p-0 text-dark position-relative"
-                  onClick={openCart}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <path d="M16 10a4 4 0 0 1-8 0"></path>
-                  </svg>
+<button
+  type="button"
+  className="cart-icon-wrapper position-relative"
+  onClick={openCart}
+  aria-label="Open cart"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="white"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="9" cy="21" r="1"></circle>
+    <circle cx="20" cy="21" r="1"></circle>
+    <path d="M1 1h4l2.6 13.5a2 2 0 0 0 2 1.5h9.7a2 2 0 0 0 2-1.6l1.3-7.4H6"></path>
+  </svg>
 
-                  {cartCount > 0 && (
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-                      {cartCount}
-                    </span>
-                  )}
-                </button>
+  {cartCount > 0 && (
+    <span className="cart-badge">
+      {cartCount}
+    </span>
+  )}
+</button>
               </div>
             </div>
           </div>

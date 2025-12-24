@@ -1,6 +1,3 @@
-
-
-
 // src/components/Recipes.jsx
 import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
@@ -14,9 +11,9 @@ export default function Recipes() {
 
   const recipes = [
     { img: `/assets/images/recepies/lemon_rice.png`, title: "Lemon Rice", description: "A flavorful and tangy rice dish", href: "#!" },
-    { img: `/assets/images/recepies/cake.png`, title: "Green Juice", description: "A refreshing green juice with lemon", href: "#!" },
-    { img: `/assets/images/recepies/lemon_tea.png`, title: "Healthy Dish", description: "A healthy, balanced dish", href: "#!" },
-    { img: `/assets/images/recepies/meat.png`, title: "Oil Dish", description: "A special dish made with organic oil", href: "#!" },
+    { img: `/assets/images/recepies/cake.png`, title: "Fresh Juice", description: "A soft and moist cake with a light, refreshing lemon flavor", href: "#!" },
+    { img: `/assets/images/recepies/lemon_tea.png`, title: "Lemon Tea", description: "A healthy, balanced tea", href: "#!" },
+    { img: `/assets/images/recepies/food.png`, title: "Healthy Food", description: "A special dish made with organic oil", href: "#!" },
     // { img: `/assets/images/chutney.png`, title: "Chutney", description: "Spicy and tangy chutney", href: "#!" },
     // { img: `/assets/images/recepies/lemon_juice.png`, title: "Fresh Juice", description: "Pure fresh lemon juice", href: "#!" },
     

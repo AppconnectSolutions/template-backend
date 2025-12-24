@@ -41,6 +41,7 @@ import ProductGrid from "./components/users/ProductGrid.jsx";
 import Footer from "./components/users/Footer.jsx";
 import { CartProvider } from "./components/users/CartContext";
 import WhyChoose from "./components/users/WhyChoose.jsx";
+import FeedbackForm from "./components/users/FeedbackForm.jsx";
 import Testimonials from "./components/users/Testimonials.jsx";
 
 import Checkout from "./components/users/Checkout.jsx";
@@ -132,6 +133,7 @@ function HomePage() {
       <div className="section"><Recipes /></div>
       <div className="section"><DailyBestSells /></div>
       <div className="section"><ProductGrid /></div>
+      <div className='section'><FeedbackForm /></div>
       <div className="section"><Testimonials /></div>
     </main>
   );

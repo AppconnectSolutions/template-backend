@@ -2,74 +2,49 @@ import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const testimonials = [
-  {
-    productImage: "./assets/images/Black_Lemon_dry.png",
-    name: "Puneet Jain",
-    avatar: "./assets/images/person_1.jpg",
-    title: "Black Lemon Dry",
-    review:
-      "Awesome. Value for money. Taste, color, texture and aroma are perfect.",
-  },
-  {
-    productImage: "./assets/new/lemon_powder.png",
-    name: "Neelam Sharma",
-    avatar: "./assets/images/person_2.jpg",
-    title: "Lemon Powder",
-    review:
-      "Perfect for instant lemon drinks and gives lemon rice a fresh, natural taste.",
-  },
-  {
-    productImage: "./assets/new/Lemon_seed_powder.png",
-    name: "Rahul Verma",
-    avatar: "./assets/images/person_3.jpg",
-    title: "Lemon Seed Powder",
-    review:
-      "Very pure and healthy. We use it daily for cooking.",
-  },
-  {
-    productImage: "./assets/new/Black_lemon_powder.png",
-    name: "Anita Roy",
-    avatar: "./assets/images/person_4.jpg",
-    title: "Black Lemon Powder",
-    review:
-      "Fresh aroma and authentic taste. Totally satisfied.",
-  },
-];
-
-export default function TestimonialsCarousel() {
+export default function FeedbackCarousel() {
+  const [feedbacks, setFeedbacks] = useState([]);
   const [index, setIndex] = useState(0);
-  const itemsPerSlide = 2;
+  const itemsPerSlide = 2; // 2 per row
+
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/feedback`);
+        const data = await res.json();
+        if (data.success) setFeedbacks(data.feedbacks);
+      } catch (err) {
+        console.error("Failed to fetch feedbacks:", err);
+      }
+    };
+    fetchFeedbacks();
+  }, []);
 
   const next = () => {
     setIndex((prev) =>
-      prev + itemsPerSlide >= testimonials.length ? 0 : prev + itemsPerSlide
+      prev + itemsPerSlide >= feedbacks.length ? 0 : prev + itemsPerSlide
     );
   };
 
   const prev = () => {
     setIndex((prev) =>
-      prev === 0
-        ? testimonials.length - itemsPerSlide
-        : prev - itemsPerSlide
+      prev === 0 ? feedbacks.length - itemsPerSlide : prev - itemsPerSlide
     );
   };
 
-  // AUTO SLIDE
   useEffect(() => {
-    const timer = setInterval(next, 4000);
+    const timer = setInterval(next, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [feedbacks]);
 
-  const visibleItems = testimonials.slice(index, index + itemsPerSlide);
+  const visibleItems = feedbacks.slice(index, index + itemsPerSlide);
 
   return (
     <section className="py-5" style={{ backgroundColor: "#faf7f2" }}>
       <div className="container">
-        {/* HEADER */}
+        {/* Header */}
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2 className="fw-semibold mb-0">From Our Customers</h2>
-
           <div className="d-flex gap-2">
             <button
               onClick={prev}
@@ -88,45 +63,35 @@ export default function TestimonialsCarousel() {
           </div>
         </div>
 
-        {/* SLIDES */}
+        {/* Feedback Cards */}
         <div className="row g-4">
           {visibleItems.map((item, i) => (
             <div className="col-12 col-lg-6" key={i}>
-              <div className="row g-4 h-100">
-                {/* PRODUCT */}
+              <div className="row g-4 h-100 align-items-center">
+                {/* Product Image */}
                 <div className="col-12 col-md-6">
                   <div className="bg-white rounded-4 shadow-sm h-100 d-flex align-items-center justify-content-center p-4">
-                    <img
-                      src={item.productImage}
-                      alt={item.title}
-                      className="img-fluid"
-                      style={{ maxHeight: 260, objectFit: "contain" }}
-                    />
+                   <img
+  src={item.product_image || "/placeholder.png"} // Use backend URL or fallback
+  alt={item.product_name} // Updated to match backend field
+  className="img-fluid"
+  style={{ maxHeight: 260, objectFit: "contain" }}
+/>
+
                   </div>
                 </div>
 
-                {/* REVIEW */}
+                {/* Feedback Card */}
                 <div className="col-12 col-md-6">
-                  <div className="bg-white rounded-4 shadow-sm h-100 p-4 d-flex flex-column justify-content-between">
-                    <div>
-                      <div className="d-flex align-items-center gap-3 mb-3">
-                        <img
-                          src={item.avatar}
-                          alt={item.name}
-                          width="86"
-                          height="86"
-                          className="rounded-circle"
-                        />
-                        <p className="fw-semibold mb-0">{item.name}</p>
-                      </div>
-
-                      <Quote size={22} className="text-secondary mb-2" />
-
-                      <h5 className="fw-semibold">{item.title}</h5>
-                      <p className="text-muted lh-lg">
-                        {item.review}
-                      </p>
-                    </div>
+                  <div className="bg-white rounded-4 shadow-sm h-100 p-4 d-flex flex-column justify-content-center">
+                    <Quote size={22} className="text-secondary mb-2" />
+                    <h5 className="fw-semibold">{item.productName}</h5>
+                    <p className="text-muted mb-2">{item.message}</p>
+                    <p className="fw-semibold mb-0">— {item.name}</p>
+                    <p className="mb-0">
+                      Rating: {"⭐".repeat(item.rating)}{" "}
+                      {"☆".repeat(5 - item.rating)}
+                    </p>
                   </div>
                 </div>
               </div>

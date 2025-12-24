@@ -1,5 +1,3 @@
-
-
 import React from "react";
 
 export default function Footers() {
@@ -39,7 +37,7 @@ export default function Footers() {
             <h5 className="footer-title">Explore</h5>
             <ul className="footer-list">
               <li><a href="/products">Freeze Dried Lemon Powder</a></li>
-              <li><a href="/products">Beverages</a></li>
+            
               <li><a href="/products">Dried Lemon</a></li>
               <li><a href="/products">Lemon Oil</a></li>
               <li><a href="/products">Skin Care</a></li>
@@ -63,11 +61,10 @@ export default function Footers() {
           <div className="col-6 col-md-3 col-lg-2">
             <h5 className="footer-title">All Over India</h5>
             <ul className="footer-list">
-              <li><a href="#">Chennai</a></li>
-              <li><a href="#">Bangalore</a></li>
-              <li><a href="#">Coimbatore</a></li>
-              <li><a href="#">Hyderabad</a></li>
-              <li><a href="#">Madurai</a></li>
+              <li><a href="https://www.amazon.in/Vitalime-Lemon-Seeds-Raw-Powder/dp/B0C29HGK8C/ref=sr_1_4_sspa?crid=1R30PBMWRIMI5&dib=eyJ2IjoiMSJ9.PPWwX1tOieVKMWpBVNqzzx4_HaceDt7Ynxg60JUbkYVLMBPi9N7SyOWgiPePwji4QPVpExMJWenuPuhhf6c8MJr7odtLKW7DVurhVcqEsgF8ko-TFKpMgpPBYisZLtVsw3cDm-TjWiOJx-bYXSVknjmy1wbSSs1j66MFZdCbNNKSJ9rHrNzNgluRk-4_pmOWyV_2eTcjj9RHkNTu8nUeEPmmVkWr5tfF2tqJ867SEF5vYWIGmc6yWJeYH-QLse3Ft4HrhuRV7kwPIxvxEuRYkQESs8FnGkip3WAeDE2sKpo._fsq3jyzvvQeFmPeg99f8xrmW464-RRrHNK8aPa3eZc&dib_tag=se&keywords=lemon+powder+for+drink&qid=1766408498&sprefix=lemon+powder+%2Caps%2C223&sr=8-4-spons&aref=DhI0DxtcUQ&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1">Amazon</a></li>
+              <li><a href="https://www.flipkart.com/vitalimes-lemon-seeds-powder-100-natural-nutrition-drink/p/itm0bcc850bc11cb?pid=ESRHEAXXZKEA6HQA&lid=LSTESRHEAXXZKEA6HQAJ0WXGW&marketplace=FLIPKART&q=vitalime+lemon+powder&store=search.flipkart.com&srno=s_1_5&otracker=search&otracker1=search&fm=Search&iid=6088150d-c885-462b-92f6-8dbf5df4f5c4.ESRHEAXXZKEA6HQA.SEARCH&ppt=sp&ppn=sp&ssid=j6vvm1tb5c0000001766407990908&qH=059e9ea48d4c3751">Flipkart</a></li>
+              <li><a href="https://vitalimes.com/products">Vitalimes</a></li>
+              
             </ul>
           </div>
 
