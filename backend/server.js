@@ -12,6 +12,18 @@ import path from "path";
 import { fileURLToPath } from "url";  
 import contactRoutes from "./routes/contact.js";
 import feedbackRoutes from "./routes/feedback.js";
+import topOfferRoutes from "./routes/topOffer.js"
+import navbarRoutes from "./routes/navbar.js"; 
+import bannerRoutes from "./routes/banner.js"; 
+import whyChooseRoutes from "./routes/whyChoose.js"; 
+import topPicksRoutes from "./routes/topPicks.js"; 
+import topHeroRoutes from "./routes/topHero.js";
+import recipeRoutes from "./routes/recipes.js";
+import dailyBestRoutes from "./routes/dailyBest.js"; 
+
+
+
+
 
 
 // emulate __dirname in ES modules
@@ -38,6 +50,15 @@ app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/feedback", feedbackRoutes);
+app.use("/api/topOffer", topOfferRoutes);
+app.use("/api/navbar", navbarRoutes);
+app.use("/api/banner", bannerRoutes);
+app.use("/api/why-choose", whyChooseRoutes);
+app.use("/api/top-picks", topPicksRoutes);
+app.use("/api/top-hero", topHeroRoutes);
+app.use("/api/recipes", recipeRoutes);
+app.use("/api/daily-best", dailyBestRoutes);
+
 
 // Root URL
 app.get("/", (req, res) => {
